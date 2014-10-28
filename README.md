@@ -16,7 +16,7 @@ systems, B uses initB as it's init system.  Because (at least at the
 moment) it is not possible to run initA and initB in parallel on one
 system, it is not possible to use program A and B at the same time.
 
-## Evolution
+## Evolution of Development
 Because of the complexity of init systems, there will be some
 dedicated steps for developing a systems which allows to use more than
 one init system in parallel.
@@ -56,7 +56,7 @@ Further investigation is needed to get a stable system.
 Currently a [branch of
 systemd](https://github.com/flonatel/systemd-pne1) was made to clean
 up the ugly hacks done to get systemd up and running as no PID1
-process.
+process - before going into details of the degradation.
 
 ## Howto
 Install [pipexec](https://github.com/flonatel/pipexec).
