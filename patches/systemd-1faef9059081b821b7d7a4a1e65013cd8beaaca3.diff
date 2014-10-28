@@ -1,0 +1,143 @@
+diff --git a/src/core/dbus.c b/src/core/dbus.c
+index fb8e496..ca53545 100644
+--- a/src/core/dbus.c
++++ b/src/core/dbus.c
+@@ -953,9 +953,11 @@ static int bus_init_private(Manager *m) {
+ 
+         if (m->running_as == SYSTEMD_SYSTEM) {
+ 
++#if 0
+                 /* We want the private bus only when running as init */
+                 if (getpid() != 1)
+                         return 0;
++#endif
+ 
+                 strcpy(sa.un.sun_path, "/run/systemd/private");
+                 salen = offsetof(union sockaddr_union, un.sun_path) + strlen("/run/systemd/private");
+diff --git a/src/core/main.c b/src/core/main.c
+index 38835fc..266a89c 100644
+--- a/src/core/main.c
++++ b/src/core/main.c
+@@ -754,7 +754,7 @@ static int parse_argv(int argc, char *argv[]) {
+         assert(argc >= 1);
+         assert(argv);
+ 
+-        if (getpid() == 1)
++//        if (getpid() == 1)
+                 opterr = 0;
+ 
+         while ((c = getopt_long(argc, argv, "hDbsz:", options, NULL)) >= 0)
+@@ -938,14 +938,17 @@ static int parse_argv(int argc, char *argv[]) {
+ 
+                 case '?':
+                 default:
++#if 0                       
+                         if (getpid() != 1) {
+                                 log_error("Unknown option code %c", c);
+                                 return -EINVAL;
+                         }
++#endif
+ 
+                         break;
+                 }
+ 
++#if 0
+         if (optind < argc && getpid() != 1) {
+                 /* Hmm, when we aren't run as init system
+                  * let's complain about excess arguments */
+@@ -953,6 +956,7 @@ static int parse_argv(int argc, char *argv[]) {
+                 log_error("Excess arguments.");
+                 return -EINVAL;
+         }
++#endif
+ 
+         if (detect_container(NULL) > 0) {
+                 char **a;
+@@ -1275,6 +1279,7 @@ int main(int argc, char *argv[]) {
+         char *switch_root_dir = NULL, *switch_root_init = NULL;
+         static struct rlimit saved_rlimit_nofile = { 0, 0 };
+ 
++#if 0
+ #ifdef HAVE_SYSV_COMPAT
+         if (getpid() != 1 && strstr(program_invocation_short_name, "init")) {
+                 /* This is compatibility support for SysV, where
+@@ -1286,6 +1291,7 @@ int main(int argc, char *argv[]) {
+                 return 1;
+         }
+ #endif
++#endif
+ 
+         dual_timestamp_from_monotonic(&kernel_timestamp, 0);
+         dual_timestamp_get(&userspace_timestamp);
+@@ -1314,10 +1320,10 @@ int main(int argc, char *argv[]) {
+         log_show_color(isatty(STDERR_FILENO) > 0);
+ 
+         /* Disable the umask logic */
+-        if (getpid() == 1)
++//        if (getpid() == 1)
+                 umask(0);
+ 
+-        if (getpid() == 1 && detect_container(NULL) <= 0) {
++        if (/*getpid() == 1 && */detect_container(NULL) <= 0) {
+ 
+                 /* Running outside of a container as PID 1 */
+                 arg_running_as = SYSTEMD_SYSTEM;
+@@ -1379,7 +1385,7 @@ int main(int argc, char *argv[]) {
+                  * might redirect output elsewhere. */
+                 log_set_target(LOG_TARGET_JOURNAL_OR_KMSG);
+ 
+-        } else if (getpid() == 1) {
++        } else /* if (getpid() == 1)*/ {
+                 /* Running inside a container, as PID 1 */
+                 arg_running_as = SYSTEMD_SYSTEM;
+                 log_set_target(LOG_TARGET_CONSOLE);
+@@ -1394,7 +1400,9 @@ int main(int argc, char *argv[]) {
+                 kernel_timestamp.monotonic = 0ULL;
+                 kernel_timestamp.realtime = 0ULL;
+ 
+-        } else {
++        } 
++#if 0
++else {
+                 /* Running as user instance */
+                 arg_running_as = SYSTEMD_USER;
+                 log_set_target(LOG_TARGET_AUTO);
+@@ -1405,6 +1413,7 @@ int main(int argc, char *argv[]) {
+                 kernel_timestamp.monotonic = 0ULL;
+                 kernel_timestamp.realtime = 0ULL;
+         }
++#endif
+ 
+         /* Initialize default unit */
+         r = set_default_unit(SPECIAL_DEFAULT_TARGET);
+@@ -1419,7 +1428,7 @@ int main(int argc, char *argv[]) {
+ 
+         /* Mount /proc, /sys and friends, so that /proc/cmdline and
+          * /proc/$PID/fd is available. */
+-        if (getpid() == 1) {
++        /* if (getpid() == 1) */ {
+                 r = mount_setup(loaded_policy);
+                 if (r < 0)
+                         goto finish;
+@@ -1519,7 +1528,7 @@ int main(int argc, char *argv[]) {
+ 
+         /* Make sure we leave a core dump without panicing the
+          * kernel. */
+-        if (getpid() == 1) {
++        /* if (getpid() == 1) */ {
+                 install_crash_handler();
+ 
+                 r = mount_cgroup_controllers(arg_join_controllers);
+diff --git a/src/core/manager.c b/src/core/manager.c
+index 0cb2044..095bcca 100644
+--- a/src/core/manager.c
++++ b/src/core/manager.c
+@@ -2559,7 +2559,7 @@ static int create_generator_dir(Manager *m, char **generator, const char *name)
+         if (*generator)
+                 return 0;
+ 
+-        if (m->running_as == SYSTEMD_SYSTEM && getpid() == 1) {
++        if (m->running_as == SYSTEMD_SYSTEM /* && getpid() == 1*/) {
+                 /* systemd --system, not running --test */
+ 
+                 p = strappend("/run/systemd/", name);

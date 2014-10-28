@@ -21,9 +21,37 @@ Because of the complexity of init systems, there will be some
 dedicated steps for developing a systems which allows to use more than
 one init system in parallel.
 
-### Evolution Step 1: metainit and systemd
+### Step 1: metainit and systemd
 The first step is to _just_ run metainit and start systemd with
 PID!=1.
+
+#### Status
+After applying some [patches for
+systemd](patches/patches/systemd-1faef9059081b821b7d7a4a1e65013cd8beaaca3.diff)
+it was possible to boot the system with systemd not running as PID1:
+
+    root@doubleinit:~# ps -elf | grep systemd
+    4 S root         1     0  0  80   0 -  1052 -      11:28 ?        00:00:00 /usr/bin/pipexec -l 1 -- [SYSTEMD /lib/systemd/systemd --system ]
+    4 S root       137     1  0  80   0 -  7703 -      11:28 ?        00:00:00 /lib/systemd/systemd --system
+    4 S root       161   137  0  80   0 -  7120 -      11:28 ?        00:00:00 /lib/systemd/systemd-journald
+    4 S root       175   137  0  80   0 -  8736 -      11:28 ?        00:00:00 /lib/systemd/systemd-udevd
+    4 S root       341   137  0  80   0 -  7064 -      11:28 ?        00:00:00 /lib/systemd/systemd-logind
+    4 S message+   342   137  0  80   0 - 28900 -      11:28 ?        00:00:00 /usr/bin/dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation
+    4 S root       373   137  0  80   0 -  7282 -      11:33 ?        00:00:00 /lib/systemd/systemd --user
+    0 S root       397   376  0  80   0 -  3179 -      12:54 pts/0    00:00:00 grep systemd
+
+But it is currently degraded
+
+    ● doubleinit
+        State: degraded
+         Jobs: 0 queued
+       Failed: 6 units
+        Since: Tue 2014-10-28 11:28:20 CET; 1h 23min ago
+       CGroup: /
+               ├─  1 /usr/bin/pipexec -l 1 -- [SYSTEMD /lib/systemd/systemd --system ]
+               ├─137 /lib/systemd/systemd --system
+
+Further investigation is needed to get a stable system.
 
 ## Requirements and Design Decisions
 
