@@ -53,13 +53,28 @@ But it is currently degraded
 
 Further investigation is needed to get a stable system.
 
+Currently a [branch of
+systemd](https://github.com/flonatel/systemd-pne1) was made to clean
+up the ugly hacks done to get systemd up and running as no PID1
+process.
+
 ## Howto
 Install [pipexec](https://github.com/flonatel/pipexec).
 
 Copy the `src/metainit` file to `/sbin`. Be sure to make it executable:
 `chmod 755 /sbin/metainit`.
 
-In grub, remove the 'quiet' and instead add 'init=/sbin/metainit'.
+In grub, remove the `quiet` and instead add `init=/sbin/metainit`.
+
+## Problems and Open Issues
+
+* Because different init systems expect different setups at system
+  init time.  Example: systemd assumes that the cgroup initialization
+  is done as PID1.  There is no (easy) way of doing such
+  initialization inside another init system.
+
+* Different init systems assume different system services. Examples:
+  systemd-logind, syslog vs. journald.
 
 ## Requirements and Design Decisions
 
