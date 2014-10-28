@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /usr/bin/pipexec -l 1 -- [SYSTEMD /lib/systemd/systemd --system ]
