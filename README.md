@@ -53,7 +53,7 @@ But it is currently degraded
 
 Further investigation is needed to get a stable system.
 
-Currently a [branch of
+Currently a [fork of
 systemd](https://github.com/flonatel/systemd-pne1) was made to clean
 up the ugly hacks done to get systemd up and running as no PID1
 process - before going into details of the degradation.
