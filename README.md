@@ -27,7 +27,7 @@ PID!=1.
 
 #### Status
 After applying some [patches for
-systemd](patches/patches/systemd-1faef9059081b821b7d7a4a1e65013cd8beaaca3.diff)
+systemd](patches/systemd-1faef9059081b821b7d7a4a1e65013cd8beaaca3.diff)
 it was possible to boot the system with systemd not running as PID1:
 
     root@doubleinit:~# ps -elf | grep systemd
