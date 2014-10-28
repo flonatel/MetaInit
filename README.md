@@ -57,7 +57,7 @@ Further investigation is needed to get a stable system.
 Install [pipexec](https://github.com/flonatel/pipexec).
 
 Copy the `src/metainit` file to `/sbin`. Be sure to make it executable:
-`chmod 755 /sbin/metainit</code>`.
+`chmod 755 /sbin/metainit`.
 
 In grub, remove the 'quiet' and instead add 'init=/sbin/metainit'.
 
