@@ -53,6 +53,14 @@ But it is currently degraded
 
 Further investigation is needed to get a stable system.
 
+## Howto
+Install [pipexec](https://github.com/flonatel/pipexec).
+
+Copy the `src/metainit` file to `/sbin`. Be sure to make it executable:
+`chmod 755 /sbin/metainit</code>`.
+
+In grub, remove the 'quiet' and instead add 'init=/sbin/metainit'.
+
 ## Requirements and Design Decisions
 
 ### DD: metainit uses pipexec as PID1
