@@ -1,2 +1,7 @@
 #!/bin/sh
+_SYSTEMCTL_SKIP_REDIRECT=yes
+export _SYSTEMCTL_SKIP_REDIRECT
+/etc/init.d/mountkernfs.sh start
+/etc/init.d/cgmanager start
+/etc/init.d/selinux-basics start
 exec /usr/bin/pipexec -l 1 -- [SYSTEMD /lib/systemd/systemd --system ]

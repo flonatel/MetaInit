@@ -1,0 +1,29 @@
+systemctl disable kbd.service
+
+# Hangs: Set preliminary keymap
+
+systemctl disable keyboard-setup.service
+-> /etc/init.d/keyboard-setup
+
+
++++ Failed to start update UTMP about System Runlevel changes
+
+# Hangs on network
+
+systemctl disable networking.service
+
+# Hangs on set console font and keymap
+
+systemctl disable console-setup.service
+
+# Hangs on basic selinux management
+
+systemctl disable selinux-basics.service
+
+
+## Starts up but is degraded
+systemctl disable systemd-update-utmp.service
+Nov 03 07:28:21 doubleinit systemd-update-utmp[372]: This program should be invoked by init only.
+
+It is not possible to call systemd-update-utmp from ppid!=1.
+

@@ -27,36 +27,44 @@ PID!=1.
 
 #### Status
 After applying some [patches for
-systemd](patches/systemd-1faef9059081b821b7d7a4a1e65013cd8beaaca3.diff)
+systemd](http://https://github.com/flonatel/systemd-pne1)
 it was possible to boot the system with systemd not running as PID1:
 
     root@doubleinit:~# ps -elf | grep systemd
-    4 S root         1     0  0  80   0 -  1052 -      11:28 ?        00:00:00 /usr/bin/pipexec -l 1 -- [SYSTEMD /lib/systemd/systemd --system ]
-    4 S root       137     1  0  80   0 -  7703 -      11:28 ?        00:00:00 /lib/systemd/systemd --system
-    4 S root       161   137  0  80   0 -  7120 -      11:28 ?        00:00:00 /lib/systemd/systemd-journald
-    4 S root       175   137  0  80   0 -  8736 -      11:28 ?        00:00:00 /lib/systemd/systemd-udevd
-    4 S root       341   137  0  80   0 -  7064 -      11:28 ?        00:00:00 /lib/systemd/systemd-logind
-    4 S message+   342   137  0  80   0 - 28900 -      11:28 ?        00:00:00 /usr/bin/dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation
-    4 S root       373   137  0  80   0 -  7282 -      11:33 ?        00:00:00 /lib/systemd/systemd --user
-    0 S root       397   376  0  80   0 -  3179 -      12:54 pts/0    00:00:00 grep systemd
+    4 S root         1     0  0  80   0 -  1053 -      08:10 ?        00:00:00 /usr/bin/pipexec -l 1 -- [SYSTEMD /lib/systemd/systemd --system --basic-system-setup ]
+    1 S root       240     1  0  80   0 -  3785 -      08:10 ?        00:00:00 /sbin/cgmanager --daemon -m name=systemd
+    4 S root       252     1  0  80   0 -  7584 -      08:10 ?        00:00:00 /lib/systemd/systemd --system --basic-system-setup
+    4 S root       272   252  0  80   0 -  7121 -      08:10 ?        00:00:00 /lib/systemd/systemd-journald
+    4 S root       278   252  0  80   0 -  8704 -      08:10 ?        00:00:00 /lib/systemd/systemd-udevd
+    4 S root       381   252  0  80   0 -  7065 -      08:10 ?        00:00:00 /lib/systemd/systemd-logind
+    4 S message+   382   252  0  80   0 - 12517 -      08:10 ?        00:00:00 /usr/bin/dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation
+    4 S root       409   252  0  80   0 -  6806 -      08:10 ?        00:00:00 /lib/systemd/systemd --user
 
-But it is currently degraded
+The following serives are disabled:
+
+    systemctl disable kbd.service
+    systemctl disable keyboard-setup.service
+    systemctl disable networking.service
+    systemctl disable console-setup.service
+    systemctl disable selinux-basics.service
+
+The selinux-basic was already started with the metainit script.
+
+System status
 
     ● doubleinit
-        State: degraded
+        State: running
          Jobs: 0 queued
-       Failed: 6 units
-        Since: Tue 2014-10-28 11:28:20 CET; 1h 23min ago
+       Failed: 0 units
+        Since: Mon 2014-11-03 08:10:34 CET; 24min ago
        CGroup: /
-               ├─  1 /usr/bin/pipexec -l 1 -- [SYSTEMD /lib/systemd/systemd --system ]
-               ├─137 /lib/systemd/systemd --system
+               ├─  1 /usr/bin/pipexec -l 1 -- [SYSTEMD /lib/systemd/systemd --system --basic-system-setup ]
+               ├─240 /sbin/cgmanager --daemon -m name=systemd
+               ├─252 /lib/systemd/systemd --system --basic-system-setup
+               ├─system.slice
+               │ ├─dbus.service
 
-Further investigation is needed to get a stable system.
-
-Currently a [fork of
-systemd](https://github.com/flonatel/systemd-pne1) was made to clean
-up the ugly hacks done to get systemd up and running as no PID1
-process - before going into details of the degradation.
+Further investigation is needed to get the disabled system serices up and running.
 
 ## Howto
 Install [pipexec](https://github.com/flonatel/pipexec).
